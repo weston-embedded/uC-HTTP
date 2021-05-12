@@ -91,6 +91,7 @@ void  HTTPsConn_Process (HTTPs_INSTANCE  *p_instance)
     const  HTTPs_CFG    *p_cfg;
            HTTPs_CONN   *p_conn;
            HTTPs_CONN   *p_conn_next;
+           NET_ERR       net_err;
            CPU_BOOLEAN   done;
            CPU_BOOLEAN   hook_def;
            CPU_BOOLEAN   process;
@@ -138,6 +139,12 @@ void  HTTPsConn_Process (HTTPs_INSTANCE  *p_instance)
 
 
                 case HTTPs_SOCK_STATE_ERR:                      /* Fatal err.                                           */
+                     if (p_conn->State == HTTPs_CONN_STATE_ERR_INTERNAL) {
+                         process = DEF_YES;
+                         break;
+                     }
+                                                                /* 'break;' intentionally omitted.                      */
+
                 case HTTPs_SOCK_STATE_CLOSE:                    /* Transaction completed.                               */
                 default:
                      HTTPsConn_Close(p_instance, p_conn);
@@ -237,7 +244,9 @@ void  HTTPsConn_Process (HTTPs_INSTANCE  *p_instance)
 
                     case HTTPs_CONN_STATE_ERR_INTERNAL:
                          HTTPsConn_ErrInternal(p_instance, p_conn);
-                         p_conn->SockState = HTTPs_SOCK_STATE_CLOSE;
+                         p_conn->SockState = NetSock_IsConn(p_conn->SockID, &net_err) ?
+                                             HTTPs_SOCK_STATE_ERR                     :
+                                             HTTPs_SOCK_STATE_CLOSE;
                          break;
 
 
