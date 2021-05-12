@@ -457,8 +457,9 @@ static  void  HTTPsConn_ErrInternal (HTTPs_INSTANCE  *p_instance,
              break;
 
         case HTTPs_ERR_FORM_FORMAT_INV:
+        case HTTPs_ERR_FORM_APP_PARSE_FAULT:
              HTTPs_ERR_INC(p_ctr_err->ErrInternal_ReqBodyFormFormatInvalid);
-             p_conn->StatusCode = HTTP_STATUS_INTERNAL_SERVER_ERR;
+             p_conn->StatusCode = HTTP_STATUS_BAD_REQUEST;
              break;
 
         case HTTPs_ERR_FORM_FILE_UPLOAD_OPEN:
