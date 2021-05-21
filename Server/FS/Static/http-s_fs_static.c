@@ -20,7 +20,7 @@
 *                                      HTTPs STATIC FILE SYSTEM
 *
 * Filename : http-s_fs_static.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 * Note(s)  : (1) All files MUST be added prior to the first file or directory access.
 *

@@ -18,7 +18,7 @@
 *                               HTTPs CONTROL LAYER REST CONFIGURATION
 *
 * Filename : http-s_ctrl_layer_rest_cfg.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

@@ -18,7 +18,7 @@
 *                                 HTTP APPLICATION WITH CONTROL LAYER
 *
 * Filename : app_global.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 * Note(s)  : (1) This application regroup with the control layer a login layer, a default page app layer
 *                and a REST app layer.

@@ -18,7 +18,7 @@
 *                                     HTTPs CONTROL LAYER MEMORY
 *
 * Filename : http-s_ctrl_layer_mem.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

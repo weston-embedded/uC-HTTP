@@ -18,7 +18,7 @@
 *                               HTTP INSTANCE SERVER CONFIGURATION FILE
 *
 * Filename : http-s_instance_secure_cfg.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 
