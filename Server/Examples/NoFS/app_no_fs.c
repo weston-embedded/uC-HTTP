@@ -18,7 +18,7 @@
 *                         HTTP INSTANCE INITALIZATION WITH NO FS APPLICATION
 *
 * Filename : app_no_fs.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 * Note(s)  : (1) This example shows how to initialize uC/HTTPs without the need of a File System,
 *                 initialize a web server instance and start it.

@@ -18,7 +18,7 @@
 *                                    HTTPs REST HOOK CONFIGURATION
 *
 * Filename : http-s_rest_hook_cfg.h
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

@@ -18,7 +18,7 @@
 *                                   HTTP INSTANCE BASIC APPLICATION
 *
 * Filename : app_basic.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 * Note(s)  : (1) This example shows how to initialize uC/HTTPs, initialize a web server instance and start it.
 *

@@ -18,7 +18,7 @@
 *                           HTTP CLIENT SOUNDCLOUD APPLICATION SOURCE CODE
 *
 * Filename : soundcloud.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

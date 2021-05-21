@@ -20,7 +20,7 @@
 *                               HTTP CLIENT APPLICATION FUNCTIONS FILE
 *
 * Filename : http-c_app.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

@@ -18,7 +18,7 @@
 *                             HTTP CLIENT DROPBOX APPLICATION SOURCE CODE
 *
 * Filename : dropbox.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

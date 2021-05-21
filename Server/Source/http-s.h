@@ -3,7 +3,7 @@
 *                                               uC/HTTP
 *                                     Hypertext Transfer Protocol
 *
-*                    Copyright 2004-2020 Silicon Laboratories Inc. www.silabs.com
+*                    Copyright 2004-2021 Silicon Laboratories Inc. www.silabs.com
 *
 *                                 SPDX-License-Identifier: APACHE-2.0
 *
@@ -20,7 +20,7 @@
 *                                             HTTP SERVER
 *
 * Filename : http-s.h
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 
@@ -70,7 +70,7 @@
 *********************************************************************************************************
 */
 
-#define  HTTPs_VERSION                                 30100u   /* See Note #1.                                         */
+#define  HTTPs_VERSION                                 30101u   /* See Note #1.                                         */
 
 
 /*

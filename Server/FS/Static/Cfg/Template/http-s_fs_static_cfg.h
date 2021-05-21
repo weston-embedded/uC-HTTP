@@ -18,7 +18,7 @@
 *                                     NET FS STATIC CONFIGURATION
 *
 * Filename : http-s_fs_static_cfg.h
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 
