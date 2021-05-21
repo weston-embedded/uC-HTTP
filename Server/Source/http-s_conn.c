@@ -3,7 +3,7 @@
 *                                               uC/HTTP
 *                                     Hypertext Transfer Protocol
 *
-*                    Copyright 2004-2020 Silicon Laboratories Inc. www.silabs.com
+*                    Copyright 2004-2021 Silicon Laboratories Inc. www.silabs.com
 *
 *                                 SPDX-License-Identifier: APACHE-2.0
 *
@@ -20,7 +20,7 @@
 *                                    HTTP SERVER CONNECTION MODULE
 *
 * Filename : http-s_conn.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 
@@ -91,6 +91,7 @@ void  HTTPsConn_Process (HTTPs_INSTANCE  *p_instance)
     const  HTTPs_CFG    *p_cfg;
            HTTPs_CONN   *p_conn;
            HTTPs_CONN   *p_conn_next;
+           NET_ERR       net_err;
            CPU_BOOLEAN   done;
            CPU_BOOLEAN   hook_def;
            CPU_BOOLEAN   process;
@@ -138,6 +139,12 @@ void  HTTPsConn_Process (HTTPs_INSTANCE  *p_instance)
 
 
                 case HTTPs_SOCK_STATE_ERR:                      /* Fatal err.                                           */
+                     if (p_conn->State == HTTPs_CONN_STATE_ERR_INTERNAL) {
+                         process = DEF_YES;
+                         break;
+                     }
+                                                                /* 'break;' intentionally omitted.                      */
+
                 case HTTPs_SOCK_STATE_CLOSE:                    /* Transaction completed.                               */
                 default:
                      HTTPsConn_Close(p_instance, p_conn);
@@ -237,7 +244,9 @@ void  HTTPsConn_Process (HTTPs_INSTANCE  *p_instance)
 
                     case HTTPs_CONN_STATE_ERR_INTERNAL:
                          HTTPsConn_ErrInternal(p_instance, p_conn);
-                         p_conn->SockState = HTTPs_SOCK_STATE_CLOSE;
+                         p_conn->SockState = NetSock_IsConn(p_conn->SockID, &net_err) ?
+                                             HTTPs_SOCK_STATE_ERR                     :
+                                             HTTPs_SOCK_STATE_CLOSE;
                          break;
 
 
@@ -457,8 +466,9 @@ static  void  HTTPsConn_ErrInternal (HTTPs_INSTANCE  *p_instance,
              break;
 
         case HTTPs_ERR_FORM_FORMAT_INV:
+        case HTTPs_ERR_FORM_APP_PARSE_FAULT:
              HTTPs_ERR_INC(p_ctr_err->ErrInternal_ReqBodyFormFormatInvalid);
-             p_conn->StatusCode = HTTP_STATUS_INTERNAL_SERVER_ERR;
+             p_conn->StatusCode = HTTP_STATUS_BAD_REQUEST;
              break;
 
         case HTTPs_ERR_FORM_FILE_UPLOAD_OPEN:

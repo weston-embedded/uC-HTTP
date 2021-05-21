@@ -18,7 +18,7 @@
 *                               HTTP INSTANCE SERVER CONFIGURATION FILE
 *
 * Filename : app_basic_http-s_instance_cfg.h
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

@@ -18,7 +18,7 @@
 *                            HTTP APPLICATION CONTROL LAYER CONFIGURATION
 *
 * Filename : app_global_ctrl_layer_cfg.h
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

@@ -18,7 +18,7 @@
 *                            HTTP CLIENT 2LEMETRY APPLICATION SOURCE CODE
 *
 * Filename : 2lemetry.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

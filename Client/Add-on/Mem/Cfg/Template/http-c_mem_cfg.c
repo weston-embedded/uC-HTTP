@@ -18,7 +18,7 @@
 *                            HTTP CLIENT MEMORY MODULE CONFIGURATION FILE
 *
 * Filename : http-c_mem_cfg.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 

@@ -3,7 +3,7 @@
 *                                               uC/HTTP
 *                                     Hypertext Transfer Protocol
 *
-*                    Copyright 2004-2020 Silicon Laboratories Inc. www.silabs.com
+*                    Copyright 2004-2021 Silicon Laboratories Inc. www.silabs.com
 *
 *                                 SPDX-License-Identifier: APACHE-2.0
 *
@@ -20,7 +20,7 @@
 *                                     HTTP SERVER REQUEST MODULE
 *
 * Filename : http-s_req.c
-* Version  : V3.01.00
+* Version  : V3.01.01
 *********************************************************************************************************
 */
 
@@ -1601,7 +1601,7 @@ static  void  HTTPsReq_HdrParse (HTTPs_INSTANCE  *p_instance,
                                                          p_field_end,
                                                         &len);
                          if (p_val != DEF_NULL) {
-                             len   = p_field_end - p_val;
+                             len       = p_field_end - p_val;
                                                                 /* Get content type key by comparing field val name.    */
                              field_key = HTTP_Dict_KeyGet(HTTP_Dict_ContentType,
                                                           HTTP_Dict_ContentTypeSize,
@@ -1629,40 +1629,49 @@ static  void  HTTPsReq_HdrParse (HTTPs_INSTANCE  *p_instance,
      (HTTPs_CFG_FORM_MULTIPART_EN == DEF_ENABLED))
                                                                 /* ----------------- STO BOUNDARY VAL ----------------- */
                                                                 /* Boundary should be located after content type ...    */
-                                                                /* val (see Note #3b).                                  */
+                                                                /* ... val (see Note #3b).                              */
+
+                                          if ((p_cfg->FormCfgPtr       != DEF_NULL)  &&
+                                              (p_conn->FormBoundaryPtr != DEF_NULL)) {
                                                                 /* Find end of content type val.                        */
-                                          p_dictionary =  HTTP_Dict_EntryGet(HTTP_Dict_ContentType,
-                                                                             HTTP_Dict_ContentTypeSize,
-                                                                             HTTP_CONTENT_TYPE_MULTIPART_FORM);
-                                          p_val        =  p_val + p_dictionary->StrLen + 1;
-                                          p_val        =  HTTP_StrGraphSrchFirst(p_val, len);
-                                          len          =  len - (p_val - p_field);
+                                              p_dictionary =  HTTP_Dict_EntryGet(HTTP_Dict_ContentType,
+                                                                                 HTTP_Dict_ContentTypeSize,
+                                                                                 HTTP_CONTENT_TYPE_MULTIPART_FORM);
+                                              p_val        =  p_val + p_dictionary->StrLen + 1;
+                                              p_val        =  HTTP_StrGraphSrchFirst(p_val, len);
+                                              len          =  len - (p_val - p_field);
 
                                                                 /* Find beginning of boundary token.                    */
-                                          p_val        =  Str_Str_N(p_val,
-                                                                    HTTP_STR_MULTIPART_BOUNDARY,
-                                                                    sizeof(HTTP_STR_MULTIPART_BOUNDARY));
+                                              p_val        =  Str_Str_N(p_val,
+                                                                        HTTP_STR_MULTIPART_BOUNDARY,
+                                                                        sizeof(HTTP_STR_MULTIPART_BOUNDARY));
 
-                                          if (p_val == DEF_NULL) {
-                                              *p_err = HTTPs_ERR_REQ_FORMAT_INVALID;
-                                               return;
-                                          }
+                                              if (p_val == DEF_NULL) {
+                                                 *p_err = HTTPs_ERR_REQ_FORMAT_INVALID;
+                                                  return;
+                                              }
 
                                                                 /* Boundary located after '='.                          */
-                                          p_val = Str_Char_N(p_val, len, ASCII_CHAR_EQUALS_SIGN);
-                                          p_val++;              /* Remove space before boundary val.                    */
-                                          p_val = HTTP_StrGraphSrchFirst(p_val,
-                                                                         len);
-                                          len   = p_field_end - p_val;
+                                              p_val = Str_Char_N(p_val, len, ASCII_CHAR_EQUALS_SIGN);
+                                              if (p_val == DEF_NULL) {
+                                                 *p_err = HTTPs_ERR_REQ_FORMAT_INVALID;
+                                                  return;
+                                              }
+
+                                              p_val++;          /* Remove space before boundary val.                    */
+                                              p_val = HTTP_StrGraphSrchFirst(p_val,
+                                                                             len);
+                                              len   = p_field_end - p_val;
 
                                                                 /* Copy boundary val to Conn struct.                    */
-                                          Str_Copy_N(p_conn->FormBoundaryPtr,
-                                                     p_val,
-                                                     len);
+                                              Str_Copy_N(p_conn->FormBoundaryPtr,
+                                                         p_val,
+                                                         len);
                                                                 /* Make sure to create a string.                        */
-                                          p_conn->FormBoundaryPtr[len] = ASCII_CHAR_NULL;
+                                              p_conn->FormBoundaryPtr[len] = ASCII_CHAR_NULL;
 
-                                          p_conn->FormBoundaryLen      = len;
+                                              p_conn->FormBoundaryLen      = len;
+                                          }
 #endif
                                           break;
 
@@ -1676,8 +1685,8 @@ static  void  HTTPsReq_HdrParse (HTTPs_INSTANCE  *p_instance,
                                  }
                              }
 
-                         } else {                               /* Should not occurs.                                   */
-                            *p_err   = HTTPs_ERR_REQ_MORE_DATA_REQUIRED;
+                         } else {                               /* Should not occur.                                    */
+                            *p_err = HTTPs_ERR_REQ_MORE_DATA_REQUIRED;
                              return;
                          }
                          break;
