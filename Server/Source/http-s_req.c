@@ -1741,7 +1741,7 @@ static  void  HTTPsReq_HdrParse (HTTPs_INSTANCE  *p_instance,
                                                          p_field_end,
                                                         &len);
 
-                         len   = DEF_MIN(len, p_cfg->HostNameLenMax);
+                         len   = DEF_MIN(len, p_cfg->HostNameLenMax - 1);
 
                                                                 /* Copy host name val in Conn struct.                   */
                          (void)Str_Copy_N(p_conn->HostPtr, p_val, len);
