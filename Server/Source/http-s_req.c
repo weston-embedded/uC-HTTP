@@ -845,6 +845,7 @@ static  void  HTTPsReq_MethodParse (HTTPs_INSTANCE  *p_instance,
     CPU_CHAR              *p_request_method_start;
     CPU_CHAR              *p_request_method_end;
     CPU_SIZE_T             len;
+    CPU_SIZE_T             skipped_chars;
     HTTPs_INSTANCE_STATS  *p_ctr_stats;
     CPU_INT32U             method;
 
@@ -857,26 +858,32 @@ static  void  HTTPsReq_MethodParse (HTTPs_INSTANCE  *p_instance,
        *p_err = HTTPs_ERR_REQ_FORMAT_INVALID;
         return;
     }
-                                                                /* Move the start ptr to the first meanningful char.    */
+                                                                /* Move the start ptr to the first printable ASCII char.*/
     p_request_method_start = HTTP_StrGraphSrchFirst(p_conn->RxBufPtr, len);
     if (p_request_method_start == DEF_NULL) {
        *p_err = HTTPs_ERR_REQ_FORMAT_INVALID;
         return;
     }
-    len -= p_request_method_start - p_conn->RxBufPtr ;
+
+    skipped_chars = p_request_method_start - p_conn->RxBufPtr;
+
+    len -= skipped_chars;                                       /* Disregard illegal, non-printable ASCII characters.   */
                                                                 /* Find the end of method string.                       */
     p_request_method_end =  Str_Char_N(p_request_method_start, len, ASCII_CHAR_SPACE);
     if (p_request_method_end == DEF_NULL) {
        *p_err = HTTPs_ERR_REQ_FORMAT_INVALID;
         return;
     }
-    len = p_request_method_end - p_request_method_start;
+
+    p_conn->RxBufLenRem -= skipped_chars;                       /* Update RxBufLenRem to reflect nbr of skipped chars.  */
+
+    len                  = p_request_method_end - p_request_method_start;
                                                                 /* Try to match the Method str received.                */
-    method = HTTP_Dict_KeyGet(HTTP_Dict_ReqMethod,
-                              HTTP_Dict_ReqMethodSize,
-                              p_request_method_start,
-                              DEF_YES,
-                              len);
+    method               = HTTP_Dict_KeyGet(HTTP_Dict_ReqMethod,
+                                            HTTP_Dict_ReqMethodSize,
+                                            p_request_method_start,
+                                            DEF_YES,
+                                            len);
                                                                 /* Validate the DictionaryKey search results            */
     if (method == HTTP_DICT_KEY_INVALID) {
         p_conn->Method = HTTP_METHOD_UNKNOWN;
@@ -1362,6 +1369,7 @@ static  void  HTTPsReq_ProtocolVerParse (HTTPs_INSTANCE  *p_instance,
            CPU_CHAR              *p_protocol_ver_end;
            CPU_INT32U             len;
            CPU_INT32U             protocol_ver;
+           CPU_SIZE_T             skipped_chars;
            HTTPs_INSTANCE_STATS  *p_ctr_stats;
 
 
@@ -1375,11 +1383,18 @@ static  void  HTTPsReq_ProtocolVerParse (HTTPs_INSTANCE  *p_instance,
                                                                 /* Move the pointer to the next meaningful char.        */
     p_protocol_ver_start = HTTP_StrGraphSrchFirst(p_conn->RxBufPtr, len);
     if (p_protocol_ver_start == DEF_NULL) {
-       *p_err               = HTTPs_ERR_REQ_FORMAT_INVALID;
+       *p_err = HTTPs_ERR_REQ_FORMAT_INVALID;
         return;
     }
+
+    skipped_chars        = p_protocol_ver_start - p_conn->RxBufPtr;
+
+    len                 -= skipped_chars;                       /* Disregard illegal, non-printable ASCII characters.   */
                                                                 /* Find the end of the request line.                    */
-    p_protocol_ver_end = Str_Str_N(p_protocol_ver_start, STR_CR_LF, len);
+    p_protocol_ver_end   = Str_Str_N(p_protocol_ver_start, STR_CR_LF, len);
+                                                                /* Update RxBufLenRem to reflect nbr of skipped chars.  */
+    p_conn->RxBufLenRem -= skipped_chars;
+	
     if (p_protocol_ver_end == DEF_NULL) {                       /* If not found, check to get more data.                */
         if (p_conn->RxBufPtr != p_conn->BufPtr) {
            *p_err = HTTPs_ERR_REQ_MORE_DATA_REQUIRED;
