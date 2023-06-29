@@ -1534,6 +1534,12 @@ static  void  HTTPsReq_ProtocolVerParse (HTTPs_INSTANCE  *p_instance,
 *                       If the user selected a second (image) file "file2.gif", the user agent might construct the parts as follows:
 *
 *                           Content-Type: multipart/form-data; boundary=AaB03x
+*
+*               (4) RFC 2046 Section "5.1.1 Common Syntax" states the following:
+*
+*                   "Boundary delimiters must not appear within the encapsulated material, and must be no longer than 70 characters,
+*                    not counting the two leading hyphens."
+*
 *********************************************************************************************************
 */
 
@@ -1676,8 +1682,14 @@ static  void  HTTPsReq_HdrParse (HTTPs_INSTANCE  *p_instance,
                                               p_val++;          /* Remove space before boundary val.                    */
                                               p_val = HTTP_StrGraphSrchFirst(p_val,
                                                                              len);
-                                              len   = p_field_end - p_val;
+                                              len   = (p_field_end - p_val);
 
+                                                                /* Make sure 'len' val does not exceed boundary thresh. */
+                                                                /* (See Note #4).                                       */
+                                              if (len >= HTTPs_FORM_BOUNDARY_STR_LEN_MAX) {
+                                                 *p_err = HTTPs_ERR_REQ_FORMAT_INVALID;
+                                                  return;
+                                              }
                                                                 /* Copy boundary val to Conn struct.                    */
                                               Str_Copy_N(p_conn->FormBoundaryPtr,
                                                          p_val,
@@ -1806,7 +1818,7 @@ static  void  HTTPsReq_HdrParse (HTTPs_INSTANCE  *p_instance,
                                 if (p_val != DEF_NULL) {
                                     len = p_field_end - p_val;
 
-                                    if (len > p_cfg->HdrRxCfgPtr->DataLenMax) {
+                                    if (len >= p_cfg->HdrRxCfgPtr->DataLenMax) {
                                         HTTPs_ERR_INC(p_ctr_errs->Req_ErrHdrDataLenInv);
                                        *p_err = HTTPS_ERR_REQ_HDR_INVALID_VAL_LEN;
                                         return;
