@@ -1394,7 +1394,7 @@ static  void  HTTPsReq_ProtocolVerParse (HTTPs_INSTANCE  *p_instance,
     p_protocol_ver_end   = Str_Str_N(p_protocol_ver_start, STR_CR_LF, len);
                                                                 /* Update RxBufLenRem to reflect nbr of skipped chars.  */
     p_conn->RxBufLenRem -= skipped_chars;
-	
+
     if (p_protocol_ver_end == DEF_NULL) {                       /* If not found, check to get more data.                */
         if (p_conn->RxBufPtr != p_conn->BufPtr) {
            *p_err = HTTPs_ERR_REQ_MORE_DATA_REQUIRED;
@@ -1444,8 +1444,8 @@ static  void  HTTPsReq_ProtocolVerParse (HTTPs_INSTANCE  *p_instance,
              return;
     }
                                                                 /* Update the RxBuf ptr.                                */
-    p_conn->RxBufLenRem      -= (p_protocol_ver_end - p_conn->RxBufPtr) + 2;
-    p_conn->RxBufPtr          =  p_protocol_ver_end + 2;
+    p_conn->RxBufLenRem -= len + STR_CR_LF_LEN;
+    p_conn->RxBufPtr     = p_protocol_ver_end + STR_CR_LF_LEN;
 
    *p_err = HTTPs_ERR_NONE;
 }
